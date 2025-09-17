@@ -836,9 +836,10 @@
             
             container.innerHTML = '';
             
-            // Charger les profils normaux
-            for (let i = 0; i < 3 && currentProfileIndex + i < profiles.length; i++) {
-                const profile = profiles[currentProfileIndex + i];
+            // Charger les profils en boucle pour permettre le swipe continu
+            for (let i = 0; i < 3; i++) {
+                const profileIndex = (currentProfileIndex + i) % profiles.length;
+                const profile = profiles[profileIndex];
                 const card = createProfileCard(profile, i);
                 container.appendChild(card);
             }
@@ -1106,9 +1107,6 @@
 
         function nextProfile() {
             currentProfileIndex++;
-            if (currentProfileIndex >= profiles.length) {
-                currentProfileIndex = 0;
-            }
             loadNextProfile();
         }
 
