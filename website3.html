@@ -148,8 +148,8 @@
         }
 
         .modal-content {
-            max-height: 90vh;
-            overflow-y: visible;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
         .button-primary {
@@ -452,6 +452,17 @@
                 padding-bottom: env(safe-area-inset-bottom, 20px);
                 background: transparent;
             }
+            
+            .modal-content {
+                /* Réduire encore plus la hauteur sur Safari */
+                max-height: 70vh !important;
+                max-width: 90vw !important;
+            }
+            
+            #profileModal .card {
+                /* Ajuster la largeur maximale sur Safari */
+                max-width: 90vw !important;
+            }
         }
     </style>
 </head>
@@ -542,8 +553,8 @@
 
     <!-- Profile Modal -->
     <div id="profileModal" class="fixed inset-0 modal z-50 hidden">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="card w-full max-w-4xl modal-content">
+        <div class="flex items-center justify-center min-h-screen p-2 sm:p-4">
+            <div class="card w-full max-w-2xl modal-content">
                 <div class="p-6 border-b">
                     <div class="flex justify-between items-center">
                         <h3 class="text-2xl font-bold">Profile & Purchase History</h3>
