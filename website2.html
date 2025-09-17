@@ -816,6 +816,24 @@
 
         function loadNextProfile() {
             const container = document.getElementById('swipeContainer');
+            
+            // Nettoyer les event listeners des anciennes cartes
+            const oldCards = container.querySelectorAll('.swipe-card');
+            oldCards.forEach(card => {
+                if (card._startDragHandler) {
+                    card.removeEventListener('mousedown', card._startDragHandler);
+                    card.removeEventListener('touchstart', card._startDragHandler);
+                }
+                if (card._dragHandler) {
+                    document.removeEventListener('mousemove', card._dragHandler);
+                    document.removeEventListener('touchmove', card._dragHandler);
+                }
+                if (card._endDragHandler) {
+                    document.removeEventListener('mouseup', card._endDragHandler);
+                    document.removeEventListener('touchend', card._endDragHandler);
+                }
+            });
+            
             container.innerHTML = '';
             
             // Charger les profils normaux
@@ -878,17 +896,33 @@
             let isDragging = false;
             let animationFrame = null;
 
+            // Créer des fonctions nommées pour pouvoir les supprimer plus tard
+            const startDragHandler = (e) => startDrag(e);
+            const dragHandler = (e) => drag(e);
+            const endDragHandler = (e) => endDrag(e);
+
+            // Stocker les handlers sur la carte pour les supprimer plus tard
+            card._startDragHandler = startDragHandler;
+            card._dragHandler = dragHandler;
+            card._endDragHandler = endDragHandler;
+
             // Mouse events
-            card.addEventListener('mousedown', startDrag);
-            document.addEventListener('mousemove', drag);
-            document.addEventListener('mouseup', endDrag);
+            card.addEventListener('mousedown', startDragHandler);
+            document.addEventListener('mousemove', dragHandler);
+            document.addEventListener('mouseup', endDragHandler);
 
             // Touch events
-            card.addEventListener('touchstart', startDrag, { passive: false });
-            document.addEventListener('touchmove', drag, { passive: false });
-            document.addEventListener('touchend', endDrag);
+            card.addEventListener('touchstart', startDragHandler, { passive: false });
+            document.addEventListener('touchmove', dragHandler, { passive: false });
+            document.addEventListener('touchend', endDragHandler);
 
             function startDrag(e) {
+                // Vérifier que la carte est toujours dans le DOM et est la première carte
+                if (!card.parentNode || !card.classList.contains('swipe-card')) return;
+                
+                const cards = document.querySelectorAll('.swipe-card');
+                if (cards.length === 0 || cards[0] !== card) return;
+                
                 isDragging = true;
                 card.classList.add('dragging');
                 
@@ -903,6 +937,13 @@
 
             function drag(e) {
                 if (!isDragging) return;
+                
+                // Vérifier que la carte est toujours active
+                if (!card.parentNode || !card.classList.contains('swipe-card')) {
+                    isDragging = false;
+                    return;
+                }
+                
                 e.preventDefault();
                 
                 const clientX = e.type === 'mousemove' ? e.clientX : e.touches[0].clientX;
@@ -936,6 +977,13 @@
 
             function endDrag(e) {
                 if (!isDragging) return;
+                
+                // Vérifier que la carte est toujours active
+                if (!card.parentNode || !card.classList.contains('swipe-card')) {
+                    isDragging = false;
+                    return;
+                }
+                
                 isDragging = false;
                 card.classList.remove('dragging');
                 
@@ -1282,6 +1330,24 @@
 
         function loadUploadedPhoto() {
             const container = document.getElementById('swipeContainer');
+            
+            // Nettoyer les event listeners des anciennes cartes
+            const oldCards = container.querySelectorAll('.swipe-card');
+            oldCards.forEach(card => {
+                if (card._startDragHandler) {
+                    card.removeEventListener('mousedown', card._startDragHandler);
+                    card.removeEventListener('touchstart', card._startDragHandler);
+                }
+                if (card._dragHandler) {
+                    document.removeEventListener('mousemove', card._dragHandler);
+                    document.removeEventListener('touchmove', card._dragHandler);
+                }
+                if (card._endDragHandler) {
+                    document.removeEventListener('mouseup', card._endDragHandler);
+                    document.removeEventListener('touchend', card._endDragHandler);
+                }
+            });
+            
             container.innerHTML = '';
             
             const uploadCard = createUploadCard();
