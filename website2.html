@@ -46,6 +46,23 @@
             color: hsl(var(--foreground));
         }
 
+        /* Mobile Safari safe area handling */
+        @supports (padding-bottom: env(safe-area-inset-bottom)) {
+            body {
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+        }
+
+        /* Additional iOS Safari fixes */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                /* Ensure content doesn't get hidden behind iOS Safari UI */
+                min-height: 100vh;
+                min-height: -webkit-fill-available;
+                position: relative;
+            }
+        }
+
         .card {
             background-color: hsl(var(--card));
             color: hsl(var(--card-foreground));
@@ -57,7 +74,7 @@
         .swipe-card {
             position: absolute;
             width: 100%;
-            height: calc(100% - 60px);
+            height: 100%;
             cursor: grab;
             will-change: transform, opacity;
             border-radius: 20px;
@@ -99,8 +116,8 @@
         }
 
         .action-button {
-            width: 48px;
-            height: 48px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -109,8 +126,6 @@
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
             border: none;
             cursor: pointer;
-            position: relative;
-            z-index: 20;
         }
 
         .action-button:hover {
@@ -141,7 +156,6 @@
             background: linear-gradient(135deg, #fd5068, #ff6b6b);
             color: white;
         }
-
 
         .modal {
             backdrop-filter: blur(12px);
@@ -286,12 +300,6 @@
             0%, 100% {
                 transform: scale(1) translateY(-2px);
             }
-            /* 25% {
-                transform: scale(1.05) translateY(-2px);
-            }
-            50% {
-                transform: scale(1.1) translateY(-4px);
-            } */
             75% {
                 transform: scale(1.05) translateY(-2px);
             }
@@ -422,30 +430,6 @@
             100% {
                 opacity: 1;
                 transform: translateX(-50%) translateY(0);
-            }
-        }
-
-        /* Mobile optimizations */
-        @media (max-width: 768px) {
-            .swipe-container {
-                touch-action: pan-y;
-            }
-            
-            .swipe-card {
-                touch-action: none;
-                height: calc(100% - 80px);
-            }
-        }
-
-        /* Safari specific optimizations */
-        @supports (-webkit-touch-callout: none) {
-            .swipe-card {
-                height: calc(100% - 100px);
-            }
-            
-            .action-button {
-                position: relative;
-                z-index: 10;
             }
         }
     </style>
