@@ -286,6 +286,16 @@
             animation: shimmer 2s linear infinite;
             transform: rotate(45deg);
         }
+        
+        .isl_holder {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 999999;
+}
 
         @keyframes highSpenderGlow {
             0% {
@@ -478,7 +488,7 @@
                 <i data-lucide="heart" class="w-5 h-5"></i>
             </button>
         </div>
-
+        <div class="isl_holder"></div>
     </main>
 
     <!-- Upload Modal -->
