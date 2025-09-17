@@ -2,7 +2,10 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>Faceit - Swipe & Discover</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.css" rel="stylesheet">
@@ -44,23 +47,14 @@
             height: 100dvh; /* Dynamic viewport height for mobile */
             overflow: hidden;
             color: hsl(var(--foreground));
-        }
-
-        /* Mobile Safari safe area handling */
-        @supports (padding-bottom: env(safe-area-inset-bottom)) {
-            body {
-                padding-bottom: env(safe-area-inset-bottom);
-            }
-        }
-
-        /* Additional iOS Safari fixes */
-        @supports (-webkit-touch-callout: none) {
-            body {
-                /* Ensure content doesn't get hidden behind iOS Safari UI */
-                min-height: 100vh;
-                min-height: -webkit-fill-available;
-                position: relative;
-            }
+            /* Force full screen on mobile */
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            /* Hide Safari UI */
+            -webkit-overflow-scrolling: touch;
         }
 
         .card {
@@ -116,8 +110,8 @@
         }
 
         .action-button {
-            width: 56px;
-            height: 56px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -156,6 +150,7 @@
             background: linear-gradient(135deg, #fd5068, #ff6b6b);
             color: white;
         }
+
 
         .modal {
             backdrop-filter: blur(12px);
@@ -286,16 +281,6 @@
             animation: shimmer 2s linear infinite;
             transform: rotate(45deg);
         }
-        
-        .isl_holder {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  z-index: 999999;
-}
 
         @keyframes highSpenderGlow {
             0% {
@@ -310,6 +295,12 @@
             0%, 100% {
                 transform: scale(1) translateY(-2px);
             }
+            /* 25% {
+                transform: scale(1.05) translateY(-2px);
+            }
+            50% {
+                transform: scale(1.1) translateY(-4px);
+            } */
             75% {
                 transform: scale(1.05) translateY(-2px);
             }
@@ -442,53 +433,105 @@
                 transform: translateX(-50%) translateY(0);
             }
         }
+
+        /* Mobile Safari specific styles */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                /* Force full screen on iOS Safari */
+                height: 100vh;
+                height: -webkit-fill-available;
+                min-height: 100vh;
+                min-height: -webkit-fill-available;
+            }
+            
+            .container {
+                height: 100vh;
+                height: -webkit-fill-available;
+                min-height: 100vh;
+                min-height: -webkit-fill-available;
+            }
+        }
+
+        /* Hide Safari UI elements */
+        @media screen and (max-width: 768px) {
+            body {
+                /* Prevent zoom on double tap */
+                touch-action: manipulation;
+                /* Hide address bar */
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            /* Ensure content fits in viewport */
+            main {
+                max-height: 100vh;
+                max-height: 100dvh;
+                overflow: hidden;
+            }
+        }
     </style>
 </head>
 <body>
     <!-- Header -->
     <header class="header-glass sticky top-0 z-40">
-        <div class="container mx-auto px-4 py-2">
+        <div class="container mx-auto px-4 py-4">
             <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-2">
-                    <div class="w-8 h-8 bg-gradient-to-br from-red-500 to-pink-500 rounded-lg flex items-center justify-center shadow-lg">
-                        <i data-lucide="heart" class="w-4 h-4 text-white heart-pulse"></i>
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                        <i data-lucide="heart" class="w-6 h-6 text-white heart-pulse"></i>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
+                        <h1 class="text-2xl font-bold bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
                             Faceit
                         </h1>
-                        <p class="text-xs text-gray-600 font-medium">Swipe & Discover</p>
+                        <p class="text-sm text-gray-600 font-medium">Swipe & Discover</p>
                     </div>
                 </div>
             </div>
         </div>
     </header>
 
-    <main class="container mx-auto px-4 py-2 max-w-md h-screen flex flex-col">
+    <main class="container mx-auto px-4 py-2 max-w-md h-screen flex flex-col" style="padding-top: env(safe-area-inset-top, 0.5rem); padding-bottom: env(safe-area-inset-bottom, 0.5rem);">
         <!-- Instructions -->
         <div class="text-center mb-2 flex-shrink-0">
-            <h2 class="text-xl font-bold text-white mb-1 drop-shadow-lg">Discover Profiles</h2>
+            <h2 class="text-xl font-bold text-black mb-1 drop-shadow-lg">Discover Profiles</h2>
             <p class="text-white/90 text-sm font-medium">Swipe right to like, left to pass</p>
         </div>
 
         <!-- Swipe Container -->
-        <div class="relative flex-1 mb-2 swipe-container" id="swipeContainer">
+        <div class="relative flex-1 mb-4" id="swipeContainer">
             <!-- Cards will be inserted here -->
         </div>
 
         <!-- Action Buttons -->
-        <div class="flex justify-center items-center space-x-6 mb-2 flex-shrink-0">
+        <div class="flex justify-center items-center space-x-4 mb-2 flex-shrink-0" style="padding-bottom: env(safe-area-inset-bottom, 0.5rem);">
             <button class="action-button pass-button" onclick="swipeLeft()" title="Pass">
-                <i data-lucide="x" class="w-5 h-5"></i>
+                <i data-lucide="x" class="w-6 h-6"></i>
             </button>
             <button class="action-button info-button" onclick="showCurrentProfile()" title="View profile">
-                <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                <i data-lucide="shopping-cart" class="w-6 h-6"></i>
             </button>
             <button class="action-button like-button" onclick="swipeRight()" title="Like">
-                <i data-lucide="heart" class="w-5 h-5"></i>
+                <i data-lucide="heart" class="w-6 h-6"></i>
             </button>
         </div>
-        <div class="isl_holder"></div>
+
+        <!-- Stats -->
+        <div class="stats-card rounded-2xl p-3 text-center flex-shrink-0">
+            <div class="grid grid-cols-3 gap-4 text-white">
+                <div>
+                    <div class="text-2xl font-bold" id="likesCount">0</div>
+                    <div class="text-xs opacity-90 font-medium">Likes</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold" id="passesCount">0</div>
+                    <div class="text-xs opacity-90 font-medium">Passes</div>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold" id="viewsCount">0</div>
+                    <div class="text-xs opacity-90 font-medium">Views</div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <!-- Upload Modal -->
@@ -688,6 +731,65 @@
             loadNextProfile();
             updateStats();
             initAudio();
+            forceFullscreen();
+        }
+
+        // Force fullscreen on mobile devices
+        function forceFullscreen() {
+            // Force fullscreen on mobile Safari
+            if (window.navigator.standalone === true) {
+                // Already in fullscreen mode
+                return;
+            }
+            
+            // Add event listeners to hide Safari UI
+            let lastScrollTop = 0;
+            let ticking = false;
+            
+            function hideSafariUI() {
+                if (!ticking) {
+                    requestAnimationFrame(() => {
+                        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                        
+                        if (scrollTop > lastScrollTop) {
+                            // Scrolling down - hide UI
+                            document.body.style.height = '100vh';
+                            document.body.style.height = '100dvh';
+                        } else {
+                            // Scrolling up - show UI
+                            document.body.style.height = '100vh';
+                            document.body.style.height = '100dvh';
+                        }
+                        
+                        lastScrollTop = scrollTop;
+                        ticking = false;
+                    });
+                    ticking = true;
+                }
+            }
+            
+            // Listen for scroll events
+            window.addEventListener('scroll', hideSafariUI, { passive: true });
+            
+            // Force viewport height on resize
+            function setViewportHeight() {
+                const vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+            }
+            
+            setViewportHeight();
+            window.addEventListener('resize', setViewportHeight);
+            window.addEventListener('orientationchange', setViewportHeight);
+            
+            // Prevent zoom on double tap
+            let lastTouchEnd = 0;
+            document.addEventListener('touchend', function (event) {
+                const now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;
+            }, false);
         }
 
         // Initialize audio context
@@ -801,11 +903,11 @@
                 <div class="relative h-full profile-image" style="background-image: url('${profile.image}')">
                     <div class="absolute inset-0 gradient-overlay"></div>
                     ${isHighSpender ? '<div class="absolute top-4 left-4 bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-3 py-1 rounded-full text-sm font-bold shadow-lg high-spender-badge">💰 HIGH SPENDER</div>' : ''}
-                    <div class="absolute bottom-0 left-0 right-0 p-8 text-white">
-                        <h3 class="text-3xl font-bold mb-2">${profile.name}</h3>
-                        <p class="text-xl opacity-90 mb-3">${profile.age} years old • ${profile.city}</p>
-                        <p class="opacity-80 mb-2 text-lg">${profile.job}</p>
-                        <p class="text-base opacity-70">${profile.bio}</p>
+                    <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+                        <h3 class="text-2xl font-bold mb-1">${profile.name}</h3>
+                        <p class="text-lg opacity-90 mb-2">${profile.age} years old • ${profile.city}</p>
+                        <p class="opacity-80 mb-1 text-base">${profile.job}</p>
+                        <p class="text-sm opacity-70">${profile.bio}</p>
                     </div>
                 </div>
             `;
@@ -1199,6 +1301,12 @@
                             </div>
                         `).join('')}
                     </div>
+                </div>
+
+                <div class="total-card rounded-2xl p-6 text-center shadow-lg ${purchaseData.totalSpent > 100000 ? 'high-spender' : ''}">
+                    <p class="${purchaseData.totalSpent > 100000 ? 'text-black/80' : 'text-white/90'} text-lg mb-2 font-medium">Total spent (last month)</p>
+                    <p class="text-4xl font-bold ${purchaseData.totalSpent > 100000 ? 'text-black' : 'text-white'}">${purchaseData.totalSpent.toLocaleString()}€</p>
+                    ${purchaseData.totalSpent > 100000 ? '<p class="text-black/70 text-sm mt-2 font-semibold">💰 HIGH SPENDER DETECTED! 💰</p>' : ''}
                 </div>
             `;
             
