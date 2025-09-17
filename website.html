@@ -40,7 +40,8 @@
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #fd5068 0%, #ff6b6b 25%, #fd5068 50%, #ff6b6b 75%, #fd5068 100%);
-            height: 100vh;
+            /* Utilisation de svh pour une meilleure compatibilité mobile */
+            height: 100svh;
             overflow: hidden;
             color: hsl(var(--foreground));
         }
@@ -419,6 +420,26 @@
             100% {
                 opacity: 1;
                 transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* Styles spécifiques pour Safari sur iPhone */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                /* Utilisation de -webkit-fill-available pour une meilleure adaptation */
+                height: -webkit-fill-available;
+            }
+            
+            main {
+                /* Ajustement de la hauteur pour éviter que la barre Safari ne cache les boutons */
+                min-height: calc(100svh - 120px);
+                padding-bottom: env(safe-area-inset-bottom, 20px);
+            }
+            
+            .action-buttons-container {
+                /* Conteneur pour les boutons d'action avec padding de sécurité */
+                padding-bottom: env(safe-area-inset-bottom, 20px);
+                background: transparent;
             }
         }
     </style>
